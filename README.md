@@ -1,6 +1,6 @@
 # Python Project Template
 
-A minimal, production-ready Python template for personal projects. Includes modern tooling (Hatch, Ruff, Mypy, Pytest) configured and ready to use.
+A minimal Python template with Hatch, type checking, linting, and testing—all configured and ready to use.
 
 ## What You Get
 
@@ -9,311 +9,133 @@ A minimal, production-ready Python template for personal projects. Includes mode
 - ✅ Pre-commit hooks for code quality
 - ✅ Pytest setup for testing
 - ✅ AI assistant instructions (Claude/Copilot)
-- ✅ All configs in `pyproject.toml` (no scattered files)
+- ✅ All configs in `pyproject.toml`
 
-## Step 1: Clone and Prepare
+## ⚡ Quick Start
 
 ```bash
 # Clone the template
 git clone <template-repo> my-project
 cd my-project
 
-# Remove template git history (optional, clean slate)
-rm -rf .git
-git init
-git add .
-git commit -m "Initial commit from template"
+# Run setup script
+./setup.sh
 ```
 
-## Step 2: Customize Project Metadata
+**The script asks for:**
+- Project name (required)
+- Your name and email (optional, press Enter to skip)
+- Python version (optional, defaults to 3.12)
 
-Edit `pyproject.toml` and update these fields:
+**Then automatically:**
+- Updates `pyproject.toml`
+- Renames package directory
+- Initializes git and creates initial commit
 
-```toml
-[project]
-name = "my-awesome-project"      # Change from "template"
-version = "0.1.0"                 # Your starting version
-description = "What your project does"
-authors = [
-    { name = "Your Name", email = "you@example.com" },
-]
-```
-
-Also update the `known-first-party` in Ruff config:
-
-```toml
-[tool.ruff.lint.isort]
-known-first-party = ["my_awesome_project"]  # Use your package name
-```
-
-## Step 3: Rename Your Package
-
-The template uses `{{package_src}}` as a placeholder. Rename it to your actual package name:
+**After setup:**
 
 ```bash
-# Rename the directory
-mv template/src/{{package_src}} template/src/my_awesome_project
-
-# Update imports in any test files (if you add them)
-# Change: from {{package_src}}.main import main
-# To:     from my_awesome_project.main import main
-```
-
-## Step 4: Update Project README
-
-Edit `template/README.md` with your project details:
-
-```markdown
-# My Awesome Project
-
-Brief description of what it does.
-
-## Installation
-
-```bash
-pip install -e .
-```
-
-## Usage
-
-Examples of how to use your project.
-
-## Development
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for dev workflow.
-```
-
-## Step 5: Set Up Development Environment
-
-```bash
-# Create the development environment
 hatch env create
-
-# Install pre-commit hooks
-hatch run fix install
-
-# Verify everything works
-hatch run type
-hatch run style
-hatch run test
+# Edit template/README.md with your project description
+# Start coding in template/src/my_package/
 ```
 
-## Step 6: Start Developing
+## Manual Setup (if you prefer)
 
-Replace `template/src/my_awesome_project/main.py` with your code:
+1. Edit `pyproject.toml` — change `name`, `version`, `authors`
+2. Rename `template/src/{{package_src}}/` to your package name
+3. Replace imports in test files (if you add tests)
+4. Update `template/README.md` with your project details
+5. Run `hatch env create`
 
-```python
-from __future__ import annotations
-
-
-def main() -> None:
-    """Main entry point for the application."""
-    print("Hello from my-awesome-project!")
-
-
-if __name__ == "__main__":
-    main()
-```
-
-Add modules in `template/src/my_awesome_project/`:
-
-```python
-# template/src/my_awesome_project/utils.py
-from __future__ import annotations
-
-
-def helper_function(data: list[str]) -> int:
-    """Count total characters in list of strings."""
-    return sum(len(item) for item in data)
-```
-
-## Step 7: Write Tests
-
-Create test files in `template/tests/`:
-
-```python
-# template/tests/test_utils.py
-from __future__ import annotations
-
-from my_awesome_project.utils import helper_function
-
-
-def test_helper_function() -> None:
-    """Test the helper function."""
-    result = helper_function(["hello", "world"])
-    assert result == 10
-```
-
-Run tests:
-
-```bash
-hatch run test
-hatch run test --cov=src  # With coverage
-```
-
-## Development Workflow
-
-### Code Quality Commands
+## Development Commands
 
 | Command | Purpose |
 |---------|---------|
-| `hatch run type` | Check types with Mypy |
-| `hatch run style` | Check code style with Ruff |
-| `hatch run fix` | Auto-fix style + run pre-commit hooks |
-| `hatch run test` | Run all tests with Pytest |
-| `hatch run test -k test_name` | Run specific test |
+| `hatch run type` | Type checking (Mypy) |
+| `hatch run style` | Lint check (Ruff) |
+| `hatch run fix` | Auto-fix + pre-commit |
+| `hatch run test` | Run tests (Pytest) |
 
-### Before Committing
+## Code Quality
+
+Code follows **PEP 8** via Ruff. Before committing:
 
 ```bash
-# Always run these before committing
 hatch run type
 hatch run style
 hatch run fix --all-files
 hatch run test
 ```
 
-Pre-commit hooks will also run automatically (configured in `.pre-commit-config.yaml`).
+Pre-commit hooks run automatically on `git commit`.
 
-### Code Style (PEP 8)
+## Project Structure
 
-Your code will be checked against PEP 8 via Ruff. Common patterns:
-
-**Imports** (always start with):
-```python
-from __future__ import annotations
 ```
-
-**Type hints** (everywhere):
-```python
-def process(items: list[str]) -> dict[str, int]:
-    """Process items and return mapping."""
-    return {item: len(item) for item in items}
-```
-
-**Classes**:
-```python
-class DataProcessor:
-    """Process data efficiently."""
-
-    def __init__(self, name: str) -> None:
-        """Initialize processor."""
-        self.name = name
-
-    def process(self, data: list[str]) -> dict[str, int]:
-        """Process data."""
-        return {item: len(item) for item in data}
-```
-
-**Error handling**:
-```python
-def load_config(path: str) -> dict:
-    """Load configuration file."""
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"Config not found: {path}")
-    
-    try:
-        with open(path) as f:
-            return json.load(f)
-    except json.JSONDecodeError as e:
-        raise ValueError(f"Invalid JSON: {e}") from e
+template/
+├── src/my_package/          # Your package code
+├── tests/                   # Add your tests here
+├── docs/                    # Documentation (RST)
+├── .github/                 # AI helper instructions
+├── pyproject.toml           # All configs
+├── CONTRIBUTING.md          # Dev guidelines
+└── README.md                # Project README
 ```
 
 ## Documentation
 
-The template includes two documentation files:
+- **template/docs/** — Sphinx-compatible documentation (optional to build)
+- **template/README.md** — Your project README
+- **.github/copilot-instructions.md** — Code patterns for AI helpers
 
-**`template/docs/index.rst`** — Main documentation page (edit with your content)
-
-**`template/docs/getting-started.rst`** — Getting started guide
-
-To build documentation locally (requires Sphinx):
+To build docs locally:
 
 ```bash
 pip install sphinx
 cd template/docs
 make html
-# Open _build/html/index.html in browser
 ```
 
 ## Troubleshooting
 
-**"Module not found" when running code**
+**"Module not found"**
 ```bash
-# Make sure environment is created
 hatch env create
 ```
 
 **Type checking errors**
 ```bash
-# Install missing type stubs
 hatch run type --install-types
 ```
 
 **Pre-commit hooks fail**
 ```bash
-# Auto-fix all issues
 hatch run fix --all-files
 ```
 
-**Tests don't find my module**
+**Tests don't find module**
 ```bash
-# Make sure package is installed in editable mode
-hatch env create  # This installs in editable mode
+hatch env create  # Installs in editable mode
 ```
 
-## Project Structure Reference
+## Configuration
 
-```
-my-project/
-├── template/
-│   ├── src/my_awesome_project/    # Your package code
-│   │   ├── __init__.py
-│   │   ├── main.py
-│   │   └── utils.py               # Add your modules
-│   ├── tests/                     # Your tests
-│   │   └── test_utils.py
-│   ├── docs/                      # Documentation
-│   ├── .github/                   # AI helper instructions
-│   ├── CONTRIBUTING.md            # Development guide
-│   └── README.md                  # Project README
-├── pyproject.toml                 # All tool configs
-├── .pre-commit-config.yaml        # Pre-commit hooks
-├── .gitignore
-└── README.md                      # This file
-```
+All tool configs are in `pyproject.toml`:
 
-## Next Steps
+- **Ruff** — Linting and formatting
+- **Mypy** — Type checking
+- **Pytest** — Testing
+- **Hatch** — Environment and scripts
 
-1. ✅ Clone template
-2. ✅ Edit `pyproject.toml`
-3. ✅ Rename package directory
-4. ✅ Run `hatch env create`
-5. ✅ Start coding in `src/my_awesome_project/`
-6. ✅ Add tests in `tests/`
-7. ✅ Run `hatch run test` before committing
-
-## Configuration Reference
-
-All tool configurations are in `pyproject.toml`:
-
-- **Ruff** (linting/formatting) — `[tool.ruff]`
-- **Mypy** (type checking) — `[tool.mypy]`
-- **Pytest** (testing) — `[tool.pytest.ini_options]`
-- **Coverage** (test coverage) — `[tool.coverage.run]`
-- **Hatch** (environment/scripts) — `[tool.hatch.*]`
-
-No need to create separate config files or directories.
+No separate config files needed.
 
 ## Tips
 
-💡 Keep functions small and focused  
-💡 Use descriptive variable names  
-💡 Write tests as you code  
-💡 Run `hatch run fix` regularly  
-💡 Use type hints everywhere  
-💡 Read existing code for patterns  
+💡 See `.github/copilot-instructions.md` for code patterns  
+💡 See `template/CONTRIBUTING.md` for development workflow  
+💡 Type hints and tests are already configured and encouraged  
 
 ---
 
-**Questions?** Check `template/CONTRIBUTING.md` for development details.
+**Next:** Clone, run `./setup.sh`, and start coding! 🚀
