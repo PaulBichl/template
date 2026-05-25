@@ -2,15 +2,6 @@
 
 A minimal Python template with Hatch, type checking, linting, and testing—all configured and ready to use.
 
-## What You Get
-
-- ✅ Working Hatch environment with uv package manager
-- ✅ Type checking (Mypy) and linting (Ruff)
-- ✅ Pre-commit hooks for code quality
-- ✅ Pytest setup for testing
-- ✅ AI assistant instructions (Claude/Copilot)
-- ✅ All configs in `pyproject.toml`
-
 ## ⚡ Quick Start
 
 ```bash
@@ -21,16 +12,6 @@ cd my-project
 # Run setup script
 ./setup.sh
 ```
-
-**The script asks for:**
-- Project name (required)
-- Your name and email (optional, press Enter to skip)
-- Python version (optional, defaults to 3.12)
-
-**Then automatically:**
-- Updates `pyproject.toml`
-- Renames package directory
-- Initializes git and creates initial commit
 
 **After setup:**
 
@@ -43,10 +24,10 @@ hatch env create
 ## Manual Setup (if you prefer)
 
 1. Edit `pyproject.toml` — change `name`, `version`, `authors`
-2. Rename `template/src/{{package_src}}/` to your package name
-3. Replace imports in test files (if you add tests)
-4. Update `template/README.md` with your project details
-5. Run `hatch env create`
+2. Rename `template/src/{{package_src}}/` to your package name 
+3. Replace imports in test files 
+4. Update `template/README.md` with your project details 
+5. Run `hatch env create` 
 
 ## Development Commands
 
@@ -64,7 +45,7 @@ Code follows **PEP 8** via Ruff. Before committing:
 ```bash
 hatch run type
 hatch run style
-hatch run fix --all-files
+hatch run fix 
 hatch run test
 ```
 
@@ -130,12 +111,6 @@ All tool configs are in `pyproject.toml`:
 
 No separate config files needed.
 
-## Tips
-
-💡 See `.github/copilot-instructions.md` for code patterns  
-💡 See `template/CONTRIBUTING.md` for development workflow  
-💡 Type hints and tests are already configured and encouraged  
-
 ---
 
-**Next:** Clone, run `./setup.sh`, and start coding! 🚀
+**Next:** Clone, run `./setup.sh`, and start coding! 
