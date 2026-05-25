@@ -1,4 +1,8 @@
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "template"
 version = "0.1.0"
@@ -8,14 +12,16 @@ requires-python = ">=3.12"
 authors = [
     { name = "Paul Bichl", email = "pbichl25@student.aau.dk" },
 ]
+license = { text = "MIT" }
+keywords = ["template", "python"]
 
 [project.optional-dependencies]
-# Add your additional development dependencies here.
 dev = [
-    # lint => cool shit
     "pre-commit",
-    "ruff",  # code formatter and linter
-    "mypy",  # type checking
+    "ruff",           # code formatter and linter
+    "mypy",           # type checking
+    "pytest",         # testing framework
+    "pytest-cov",     # coverage plugin for pytest
 ]
 
 ###########################################
@@ -41,6 +47,8 @@ installer = "uv"
 python = "3.12"  # Specifies the Python version for the default development environment
 features = ["dev"]
 dependencies = [
+    "pytest",
+    "pytest-cov",
     "numpy",
     "pandas",
     "matplotlib",
@@ -55,6 +63,9 @@ clean = [
     "git clean -ffX .tmp",  # Temporary files from testing
     "git clean -fX src/**/version.py",
 ]
+
+# Runs pytest (testing framework)
+test = "pytest {args:tests}"
 
 # Runs mypy
 type = "mypy --install-types --non-interactive src {args}"
@@ -183,3 +194,43 @@ strict_optional = true
 warn_redundant_casts = true
 warn_return_any = true
 warn_unused_ignores = true
+
+
+#########
+# Pytest #
+#########
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "-ra",  # show summary of all test outcomes
+]
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks tests as integration tests",
+]
+
+
+##########
+# Coverage #
+##########
+[tool.coverage.run]
+source = ["src"]
+branch = true
+parallel = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+precision = 2
