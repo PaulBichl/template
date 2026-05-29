@@ -1,6 +1,6 @@
-# Copilot Instructions for Your Project
+# Agent Instructions
 
-This guides Copilot on your code style and project structure.
+Guide for Claude, Copilot, and other AI assistants on code style and project patterns.
 
 ## Project Setup
 
@@ -158,37 +158,25 @@ def test_with_fixture(sample_data: list[int]) -> None:
 - **Constants**: `UPPER_SNAKE_CASE` (e.g., `MAX_ITEMS = 100`)
 - **Private**: Prefix with `_` (e.g., `_internal_method()`)
 
-## Common Patterns
+## Do's and Don'ts
 
-### Don't
+### ✅ Do
 
-❌ Relative imports - use absolute imports  
-❌ Bare `except:` - catch specific exceptions  
-❌ Unused imports - Ruff will flag these  
-❌ Magic numbers - use named constants  
-❌ Deep nesting - extract to functions  
+- Use type hints everywhere
+- Write docstrings for public APIs
+- Keep functions small and focused
+- Add tests for new features
+- Use descriptive names
+- Catch specific exceptions
 
-### Do
+### ❌ Don't
 
-✅ Use type hints everywhere  
-✅ Write docstrings for public APIs  
-✅ Keep functions small and focused  
-✅ Add tests for new features  
-✅ Use descriptive names  
-
-## When You Need Help from Claude/Copilot
-
-**Good requests**:
-- "Add a function that does X following our patterns"
-- "Write tests for this module"
-- "Refactor this code to be cleaner"
-- "Add type hints to these functions"
-- "Fix the linting errors"
-
-**Clarify first**:
-- "Where should this go?" → Describe what it does
-- "What's the best approach?" → Explain the requirement
+- Use relative imports (use absolute imports)
+- Bare `except:` clauses (catch specific exceptions)
+- Leave unused imports (Ruff will flag these)
+- Use magic numbers (use named constants)
+- Create deeply nested code (extract to functions)
 
 ---
 
-Read the README.md for project overview. Look at existing code for examples.
+Look at `main.py` for basic structure and `pyproject.toml` for tool configuration.

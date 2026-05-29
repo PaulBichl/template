@@ -17,9 +17,8 @@ template/               # What gets cloned/forked
 │   └── main.py         # Minimal entry point
 ├── tests/              # Empty - user adds tests
 ├── docs/               # Getting started guide only
-├── .github/
-│   ├── CLAUDE.md       # Instructions for this repo
-│   └── copilot-instructions.md
+├── .github/            # GitHub workflows (if needed)
+├── AGENT.md            # Instructions for AI assistants
 ├── pyproject.toml      # All tool configs
 ├── CONTRIBUTING.md     # Brief dev workflow
 └── README.md           # Project template
@@ -39,9 +38,7 @@ template/               # What gets cloned/forked
 
 **main.py** - Minimal entry point (users replace with their code)
 
-**.github/copilot-instructions.md** - Code patterns for AI assistants
-
-**copilot-instructions.md** - Patterns: imports, type hints, classes, testing
+**AGENT.md** - Code patterns and instructions for AI assistants (Claude, Copilot)
 
 ## Maintenance
 
