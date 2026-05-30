@@ -106,6 +106,10 @@ skip-install = true
 [tool.hatch.metadata]
 allow-direct-references = true
 
+# Tell hatchling where the importable package lives (setup.sh rewrites the path)
+[tool.hatch.build.targets.wheel]
+packages = ["src/{{package_src}}"]
+
 
 ########
 # Ruff #

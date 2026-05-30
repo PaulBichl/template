@@ -16,14 +16,17 @@ cd my-project
 **After setup:**
 
 ```bash
+cd template
 hatch env create
-# Edit template/README.md with your project description
-# Start coding in template/src/my_package/
+# Edit README.md with your project description
+# Start coding in src/my_package/
 ```
+
+> All `hatch` commands below are run from inside the `template/` directory, where `pyproject.toml` lives.
 
 ## Manual Setup (if you prefer)
 
-1. Edit `pyproject.toml` — change `name`, `version`, `authors`
+1. Edit `template/pyproject.toml` — change `name`, `version`, `authors`
 2. Rename `template/src/{{package_src}}/` to your package name 
 3. Replace imports in test files 
 4. Update `template/README.md` with your project details 

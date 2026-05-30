@@ -85,22 +85,25 @@ echo ""
 echo -n "Renaming package directory... "
 if [ -d "template/src/{{package_src}}" ]; then
     mv "template/src/{{package_src}}" "template/src/$PACKAGE_NAME"
+    # Fix the package self-import in __main__.py
+    [ -f "template/src/$PACKAGE_NAME/__main__.py" ] && \
+        sed -i "s/{{package_src}}/$PACKAGE_NAME/g" "template/src/$PACKAGE_NAME/__main__.py"
     echo -e "${GREEN}✓${NC}"
 else
     echo -e "${YELLOW}⊘ (directory already renamed or missing)${NC}"
 fi
 
-# 2. Update pyproject.toml
-echo -n "Updating pyproject.toml... "
-if [ -f "pyproject.toml" ]; then
+# 2. Update template/pyproject.toml
+echo -n "Updating template/pyproject.toml... "
+if [ -f "template/pyproject.toml" ]; then
     # Create a temporary file for sed operations
     sed_file=$(mktemp)
 
     # Replace template name with project name
-    sed "s/name = \"template\"/name = \"$PROJECT_NAME\"/g" pyproject.toml > "$sed_file"
+    sed "s/name = \"template\"/name = \"$PROJECT_NAME\"/g" template/pyproject.toml > "$sed_file"
 
-    # Update author name and email
-    sed -i "s/{ name = \"Paul Bichl\", email = \"paul.bichl@edu.fh-joanneum.at\" }/{ name = \"$AUTHOR_NAME\", email = \"$AUTHOR_EMAIL\" }/g" "$sed_file"
+    # Update author name and email (matches any name/email in the authors entry)
+    sed -i -E "s/\{ name = \"[^\"]*\", email = \"[^\"]*\" \}/{ name = \"$AUTHOR_NAME\", email = \"$AUTHOR_EMAIL\" }/g" "$sed_file"
 
     # Update Python version if provided
     if [ -n "$PYTHON_VERSION" ]; then
@@ -111,26 +114,29 @@ if [ -f "pyproject.toml" ]; then
     # Update Ruff known-first-party
     sed -i "s/known-first-party = \[\"template\"\]/known-first-party = [\"$PACKAGE_NAME\"]/g" "$sed_file"
 
+    # Point the wheel build target at the renamed package directory
+    sed -i "s/{{package_src}}/$PACKAGE_NAME/g" "$sed_file"
+
     # Apply changes
-    mv "$sed_file" pyproject.toml
+    mv "$sed_file" template/pyproject.toml
     echo -e "${GREEN}✓${NC}"
 else
-    echo -e "${YELLOW}⊘ (pyproject.toml not found)${NC}"
+    echo -e "${YELLOW}⊘ (template/pyproject.toml not found)${NC}"
 fi
 
-# 3. Update template/.github/CLAUDE.md
-echo -n "Updating template/.github/CLAUDE.md... "
-if [ -f "template/.github/CLAUDE.md" ]; then
-    sed -i "s/{{package_src}}/$PACKAGE_NAME/g" "template/.github/CLAUDE.md"
+# 3. Update template/AGENT.md
+echo -n "Updating template/AGENT.md... "
+if [ -f "template/AGENT.md" ]; then
+    sed -i "s/{{package_src}}/$PACKAGE_NAME/g" "template/AGENT.md"
     echo -e "${GREEN}✓${NC}"
 else
     echo -e "${YELLOW}⊘ (file not found)${NC}"
 fi
 
-# 4. Update template/.github/copilot-instructions.md
-echo -n "Updating template/.github/copilot-instructions.md... "
-if [ -f "template/.github/copilot-instructions.md" ]; then
-    sed -i "s/{{package_src}}/$PACKAGE_NAME/g" "template/.github/copilot-instructions.md"
+# 4. Update test files
+echo -n "Updating test files... "
+if [ -f "template/tests/unit/test_hello_world.py" ]; then
+    sed -i "s/{{package_src}}/$PACKAGE_NAME/g" "template/tests/unit/test_hello_world.py"
     echo -e "${GREEN}✓${NC}"
 else
     echo -e "${YELLOW}⊘ (file not found)${NC}"
@@ -165,7 +171,16 @@ else
     echo -e "${YELLOW}⊘ (file not found)${NC}"
 fi
 
-# 8. Initialize git (if not already a repo)
+# 8. Update template/LICENSE
+echo -n "Updating template/LICENSE... "
+if [ -f "template/LICENSE" ]; then
+    sed -i "s/{{Paul Bichl}}/$AUTHOR_NAME/g" "template/LICENSE"
+    echo -e "${GREEN}✓${NC}"
+else
+    echo -e "${YELLOW}⊘ (file not found)${NC}"
+fi
+
+# 9. Initialize git (if not already a repo)
 echo -n "Initializing git repository... "
 if [ ! -d ".git" ]; then
     git init > /dev/null 2>&1
@@ -174,7 +189,7 @@ else
     echo -e "${YELLOW}⊘ (already a git repository)${NC}"
 fi
 
-# 9. Add and commit initial setup
+# 10. Add and commit initial setup
 echo -n "Creating initial commit... "
 git add -A > /dev/null 2>&1
 git commit -m "Initial commit from template
@@ -193,10 +208,11 @@ echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 echo "Next steps:"
 echo "  1. Edit template/README.md with your project description"
-echo "  2. Run: hatch env create"
-echo "  3. Start coding in: template/src/$PACKAGE_NAME/"
+echo "  2. cd template"
+echo "  3. Run: hatch env create"
+echo "  4. Start coding in: src/$PACKAGE_NAME/"
 echo ""
-echo "Commands:"
+echo "Commands (run from the template/ directory):"
 echo "  hatch run type     # Type checking"
 echo "  hatch run style    # Code style check"
 echo "  hatch run fix      # Auto-fix style"
