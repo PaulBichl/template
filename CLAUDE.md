@@ -8,29 +8,51 @@ This is a minimal Python project template for personal projects.
 - **Scope**: Lean, no examples, just the essentials
 - **Users**: Developers who clone/fork and build their own projects
 
-## Template Structure
+## Repo Layout
+
+The repo separates **machinery** (outer) from the **project payload** (nested `template/`):
 
 ```
-template/               # What gets cloned/forked
-├── src/{{package_src}}/    # User's package
-│   ├── __init__.py
-│   └── main.py         # Minimal entry point
-├── tests/              # Empty - user adds tests
-├── docs/               # Getting started guide only
-├── .github/            # GitHub workflows (if needed)
-├── AGENT.md            # Instructions for AI assistants
-├── pyproject.toml      # All tool configs
-├── CONTRIBUTING.md     # Brief dev workflow
-└── README.md           # Project template
+<repo root>                 # template machinery — removed on setup
+├── CLAUDE.md               # this file (template maintenance)
+├── README.md               # describes the template
+├── setup.sh                # bootstrap script (flattens + cleans + git init)
+├── .gitignore              # template housekeeping
+└── template/               # PAYLOAD — becomes the user's project
+    ├── src/{{package_src}}/    # User's package
+    │   ├── __init__.py
+    │   └── main.py         # Minimal entry point
+    ├── tests/              # Empty - user adds tests
+    ├── docs/               # Getting started guide only
+    ├── AGENT.md            # Instructions for AI assistants
+    ├── pyproject.toml      # All tool configs
+    ├── CONTRIBUTING.md     # Brief dev workflow
+    ├── .gitignore          # Python .gitignore
+    ├── .pre-commit-config.yaml
+    ├── LICENSE
+    └── README.md           # Project README
 ```
+
+## What `setup.sh` Does
+
+After collecting project name / author / Python version it:
+
+1. Renames `src/{{package_src}}/` and replaces `{{...}}` placeholders
+2. **Flattens** the `template/` payload up to the repo root
+3. **Removes machinery**: `CLAUDE.md`, `setup.sh`, `.claude/`, and the outer README/.gitignore (the payload versions take their place)
+4. **Resets git**: drops template history and creates one fresh `Initial commit`
+
+The result is a clean, flat blank project — not a clone with placeholders swapped in.
 
 ## Customization Checklist for Users
 
-1. Edit `pyproject.toml`: change `name`, `version`, author
-2. Rename `src/{{package_src}}/` to actual package name
-3. Edit `template/README.md` with project details
-4. Run `hatch env create && hatch run test`
-5. Start building
+1. Run `./setup.sh` (does all of the below automatically), or manually:
+2. Edit `template/pyproject.toml`: change `name`, `version`, author
+3. Rename `template/src/{{package_src}}/` to actual package name
+4. Edit `template/README.md` with project details
+5. Flatten `template/` to the root and delete the machinery files
+6. Run `hatch env create && hatch run test`
+7. Start building
 
 ## Key Files
 

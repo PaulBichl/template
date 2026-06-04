@@ -43,6 +43,8 @@ dependencies = [
 
 # https://hatch.pypa.io/latest/config/environment/overview/
 [tool.hatch.envs.default]
+type = "virtual"
+path = ".hatch"  # Keep the environment inside the project (gitignored) instead of a central cache
 installer = "uv"
 python = "3.12"  # Specifies the Python version for the default development environment
 features = ["dev"]

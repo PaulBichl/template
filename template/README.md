@@ -26,6 +26,9 @@ pre-commit install
 ## Quick Start
 
 ```bash
+# Create the local dev environment (created in ./.hatch, gitignored)
+hatch env create
+
 # Run the project
 python -m {{package_src}}
 
@@ -40,15 +43,18 @@ hatch run fix      # Auto-fix all
 
 ## Development
 
-See the [main template README](../../README.md) for detailed development instructions.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development workflow and guidelines.
 
 ### Commands
 
+- `hatch env create` - Create the dev environment (in `./.hatch`)
 - `hatch run type` - Type checking
 - `hatch run style` - Lint check
 - `hatch run fix` - Auto-fix code style
 - `hatch run test` - Run tests
 - `hatch run update-precommit` - Update pre-commit hooks
+
+> The default environment lives in `./.hatch` (kept in-project and gitignored) rather than Hatch's central cache.
 
 ## Documentation
 

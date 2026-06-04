@@ -180,39 +180,59 @@ else
     echo -e "${YELLOW}⊘ (file not found)${NC}"
 fi
 
-# 9. Initialize git (if not already a repo)
-echo -n "Initializing git repository... "
-if [ ! -d ".git" ]; then
-    git init > /dev/null 2>&1
+# 9. Flatten: move the project payload from template/ up to the repo root
+echo -n "Flattening project to repository root... "
+if [ -d "template" ]; then
+    # Move all contents of template/ (including dotfiles) up one level.
+    # Files with the same name at the root (README.md, .gitignore) are
+    # intentionally overwritten by the project versions from template/.
+    shopt -s dotglob
+    mv template/* . 2>/dev/null || true
+    shopt -u dotglob
+    rmdir template 2>/dev/null || true
     echo -e "${GREEN}✓${NC}"
 else
-    echo -e "${YELLOW}⊘ (already a git repository)${NC}"
+    echo -e "${YELLOW}⊘ (already flattened or missing)${NC}"
 fi
 
-# 10. Add and commit initial setup
+# 10. Remove template machinery that should not live in a real project
+echo -n "Removing template machinery... "
+rm -f CLAUDE.md          # template-maintenance instructions (not for projects)
+rm -rf .claude           # template-specific local Claude settings
+# setup.sh removes itself last (it is already loaded into memory, so this is safe)
+echo -e "${GREEN}✓${NC}"
+
+# 11. Reset git history so the project starts clean (no template history)
+echo -n "Initializing fresh git repository... "
+rm -rf .git
+git init -q
+echo -e "${GREEN}✓${NC}"
+
+# 12. Create the initial commit
 echo -n "Creating initial commit... "
+rm -f setup.sh           # delete the bootstrap script itself
 git add -A > /dev/null 2>&1
-git commit -m "Initial commit from template
+git commit -q -m "Initial commit
 
 - Project: $PROJECT_NAME
 - Author: $AUTHOR_NAME <$AUTHOR_EMAIL>
-- Python: ${PYTHON_VERSION:-3.12}" > /dev/null 2>&1 || echo -e "${YELLOW}⊘ (nothing to commit)${NC}"
-if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✓${NC}"
-fi
+- Python: ${PYTHON_VERSION:-3.12}" > /dev/null 2>&1 \
+    && echo -e "${GREEN}✓${NC}" \
+    || echo -e "${YELLOW}⊘ (nothing to commit)${NC}"
 
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${GREEN}Setup Complete!${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
-echo "Next steps:"
-echo "  1. Edit template/README.md with your project description"
-echo "  2. cd template"
-echo "  3. Run: hatch env create"
-echo "  4. Start coding in: src/$PACKAGE_NAME/"
+echo "Your project is now a clean, flat blank state at the repo root."
 echo ""
-echo "Commands (run from the template/ directory):"
+echo "Next steps:"
+echo "  1. Edit README.md with your project description"
+echo "  2. Run: hatch env create"
+echo "  3. Start coding in: src/$PACKAGE_NAME/"
+echo ""
+echo "Commands:"
 echo "  hatch run type     # Type checking"
 echo "  hatch run style    # Code style check"
 echo "  hatch run fix      # Auto-fix style"

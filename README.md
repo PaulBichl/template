@@ -13,29 +13,37 @@ cd my-project
 ./setup.sh
 ```
 
+`setup.sh` flattens the project payload up to the repo root, removes the
+template machinery (this README, `CLAUDE.md`, `setup.sh`), and starts a
+fresh git history — leaving a clean blank project to build on.
+
 **After setup:**
 
 ```bash
-cd template
 hatch env create
 # Edit README.md with your project description
 # Start coding in src/my_package/
 ```
 
-> All `hatch` commands below are run from inside the `template/` directory, where `pyproject.toml` lives.
+> All `hatch` commands run from the repo root, where `pyproject.toml` lives.
+> `hatch env create` builds the environment in `./.hatch` (in-project and gitignored).
 
 ## Manual Setup (if you prefer)
 
+The project lives in the nested `template/` directory. To set it up by hand:
+
 1. Edit `template/pyproject.toml` — change `name`, `version`, `authors`
-2. Rename `template/src/{{package_src}}/` to your package name 
-3. Replace imports in test files 
-4. Update `template/README.md` with your project details 
-5. Run `hatch env create` 
+2. Rename `template/src/{{package_src}}/` to your package name
+3. Replace imports in test files
+4. Move the contents of `template/` up to the repo root
+5. Delete `CLAUDE.md`, `setup.sh`, and this README
+6. Run `hatch env create`
 
 ## Development Commands
 
 | Command | Purpose |
 |---------|---------|
+| `hatch env create` | Create the dev environment (in `./.hatch`) |
 | `hatch run type` | Type checking (Mypy) |
 | `hatch run style` | Lint check (Ruff) |
 | `hatch run fix` | Auto-fix + pre-commit |
@@ -54,14 +62,14 @@ hatch run test
 
 Pre-commit hooks run automatically on `git commit`.
 
-## Project Structure
+## Project Structure (after setup)
 
 ```
-template/
+my-project/
 ├── src/my_package/          # Your package code
 ├── tests/                   # Add your tests here
 ├── docs/                    # Documentation (RST)
-├── .github/                 # AI helper instructions
+├── AGENT.md                 # Instructions for AI assistants
 ├── pyproject.toml           # All configs
 ├── CONTRIBUTING.md          # Dev guidelines
 └── README.md                # Project README
@@ -69,15 +77,15 @@ template/
 
 ## Documentation
 
-- **template/docs/** — Sphinx-compatible documentation (optional to build)
-- **template/README.md** — Your project README
-- **.github/copilot-instructions.md** — Code patterns for AI helpers
+- **docs/** — Sphinx-compatible documentation (optional to build)
+- **README.md** — Your project README
+- **AGENT.md** — Code patterns for AI assistants
 
 To build docs locally:
 
 ```bash
 pip install sphinx
-cd template/docs
+cd docs
 make html
 ```
 
